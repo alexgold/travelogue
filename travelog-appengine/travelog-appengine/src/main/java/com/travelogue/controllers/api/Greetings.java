@@ -1,9 +1,11 @@
-package com.travelog;
+package com.travelogue.controllers.api;
 
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.appengine.api.users.User;
+import com.travelogue.entities.HelloGreeting;
+import com.travelogue.persist.Constants;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.travelog;
+package com.travelogue.entities;
 
 public class HelloGreeting {
 

@@ -5,8 +5,8 @@
     <packaging>war</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
-    <groupId>com.travelog</groupId>
-    <artifactId>travelog-appengine</artifactId>
+    <groupId>com.travelogue</groupId>
+    <artifactId>travelogue-appengine</artifactId>
     
 	<pluginRepositories>
         <pluginRepository>
@@ -22,6 +22,13 @@
         <appengine.app.id>travelog-2014</appengine.app.id>        
         <appengine.target.version>1.9.6</appengine.target.version>
     </properties>
+
+	<repositories>
+    	<repository>
+        	<id>gcm-server-repository</id>
+        	<url>https://github.com/slorber/gcm-server-repository/raw/master/releases/</url>
+    	</repository>
+	</repositories>
 
     <prerequisites>
         <maven>3.1.0</maven>
@@ -51,10 +58,20 @@
             <version>1</version>
         </dependency>
         <dependency>
-            <groupId>javax.jdo</groupId>
-            <artifactId>jdo-api</artifactId>
-            <version>3.0.1</version>
-        </dependency>
+			<groupId>com.googlecode.objectify</groupId>
+			<artifactId>objectify</artifactId>
+			<version>5.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
+        <dependency>
+		    <groupId>com.google.android.gcm</groupId>
+		    <artifactId>gcm-server</artifactId>
+		    <version>1.0.2</version>
+		</dependency>
 
         <!-- Test Dependencies -->
         <dependency>
@@ -81,11 +98,32 @@
             <version>${appengine.target.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>0.11.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>3.0</version>
+		</dependency>
     </dependencies>
 
     <build>
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+        <pluginManagement>
         <plugins>
         	<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -153,6 +191,7 @@
                 </executions>
             </plugin>
         </plugins>
+        </pluginManagement>
     </build>
 
 </project>

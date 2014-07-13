@@ -1,4 +1,4 @@
-package com.travelog;
+package com.travelogue.persist;
 
 /**
  * Contains the client IDs and scopes for allowed clients consuming the helloworld API.
