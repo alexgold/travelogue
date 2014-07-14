@@ -93,7 +93,7 @@ google.devrel.samples.hello.print = function(greeting) {
  * @param {string} id ID of the greeting.
  */
 google.devrel.samples.hello.getGreeting = function(id) {
-  gapi.client.travelog.greetings.getGreeting({'id': id}).execute(
+  gapi.client.travelogue.greetings.getGreeting({'id': id}).execute(
       function(resp) {
         if (!resp.code) {
           google.devrel.samples.hello.print(resp);
@@ -107,7 +107,7 @@ google.devrel.samples.hello.getGreeting = function(id) {
  * Lists greetings via the API.
  */
 google.devrel.samples.hello.listGreeting = function() {
-  gapi.client.travelog.greetings.listGreeting().execute(
+  gapi.client.travelogue.greetings.listGreeting().execute(
       function(resp) {
         if (!resp.code) {
           resp.items = resp.items || [];
@@ -125,7 +125,7 @@ google.devrel.samples.hello.listGreeting = function() {
  */
 google.devrel.samples.hello.multiplyGreeting = function(
     greeting, times) {
-  gapi.client.travelog.greetings.multiply({
+  gapi.client.travelogue.greetings.multiply({
       'message': greeting,
       'times': times
     }).execute(function(resp) {
@@ -139,7 +139,7 @@ google.devrel.samples.hello.multiplyGreeting = function(
  * Greets the current user via the API.
  */
 google.devrel.samples.hello.authedGreeting = function(id) {
-  gapi.client.travelog.greetings.authed().execute(
+  gapi.client.travelogue.greetings.authed().execute(
       function(resp) {
         google.devrel.samples.hello.print(resp);
       });
@@ -190,6 +190,6 @@ google.devrel.samples.hello.init = function(apiRoot) {
   }
 
   apisToLoad = 2; // must match number of calls to gapi.client.load()
-  gapi.client.load('travelog', 'v1', callback, apiRoot);
+  gapi.client.load('travelogue', 'v1', callback, apiRoot);
   gapi.client.load('oauth2', 'v2', callback);
 };
