@@ -6,7 +6,6 @@ import lombok.Setter;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
-
 /**
  * An entity for Android device information.
  * 
@@ -30,27 +29,31 @@ import com.googlecode.objectify.annotation.Id;
 // DeviceInfoEndpoint has NO AUTHENTICATION - it is an OPEN ENDPOINT!
 public class DeviceInfo {
 
-  /*
-   * The Google Cloud Messaging registration token for the device. This token
-   * indicates that the device is able to receive messages sent via GCM.
-   */
-  @Id
-  @Getter
-  @Setter
-  private String deviceRegistrationID;
+	/*
+	 * The Google Cloud Messaging registration token for the device. This token
+	 * indicates that the device is able to receive messages sent via GCM.
+	 */
+	@Id
+	@Getter
+	@Setter
+	private String deviceRegistrationID;
 
-  /*
-   * Some identifying information about the device, such as its manufacturer
-   * and product name.
-   */
-  @Getter
-  @Setter
-  private String deviceInformation;
+	/*
+	 * Some identifying information about the device, such as its manufacturer
+	 * and product name.
+	 */
+	@Getter
+	@Setter
+	private String deviceInformation;
 
-  /*
-   * Timestamp indicating when this device registered with the application.
-   */
-  @Getter
-  @Setter
-  private long timestamp;
+	/*
+	 * Timestamp indicating when this device registered with the application.
+	 */
+	@Getter
+	@Setter
+	private long timestamp;
+
+	public void setFields(DeviceInfo deviceinfo) {
+		setDeviceInformation(deviceinfo.getDeviceInformation());
+	}
 }

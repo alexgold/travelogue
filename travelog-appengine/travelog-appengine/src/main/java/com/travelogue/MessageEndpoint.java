@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
@@ -16,8 +14,9 @@ import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.response.CollectionResponse;
-import com.google.appengine.api.datastore.Cursor;
-import com.google.appengine.datanucleus.query.JPACursorHelper;
+import com.travelogue.entities.DeviceInfo;
+import com.travelogue.entities.MessageData;
+import com.travelogue.services.db.MessageDBService;
 
 
 /**
@@ -53,7 +52,7 @@ public class MessageEndpoint {
    * Google Cloud Messaging from your AppEngine application even if you are
    * using a App Engine's local development server.
    */
-  private static final String API_KEY = "AIzaSyDis0J2D-iDHI0QJL9MSWPllC5Velz0vYw";
+  private static final String API_KEY = "AIzaSyCTjVBYhV_rvgZKN5ODkNAWf50vy7UDTIo";
 
   private static final DeviceInfoEndpoint endpoint = new DeviceInfoEndpoint();
   
@@ -70,47 +69,21 @@ public class MessageEndpoint {
    * @return
    *          A collection of MessageData items
    */
-  @SuppressWarnings({ "unchecked", "unused" })
   @ApiMethod(name = "listMessages")
   public CollectionResponse<MessageData> listMessages(
-      @Nullable @Named("cursor") String cursorString,
-      @Nullable @Named("limit") Integer limit) {
+      @Nullable @Named("offset") int offset,
+      @Nullable @Named("limit") int limit) {
 
-    EntityManager mgr = null;  
-    Cursor cursor = null;
-    List<MessageData> execute = null;
+	MessageDBService mgr = null; 
+    List<MessageData> result = null;
     
-    try {
-      mgr = getEntityManager();
-      // query for messages, newest message first
-      Query query = mgr
-          .createQuery("select from MessageData as MessageData order by timestamp desc");
-      if (cursorString != null && cursorString != "") {
-        cursor = Cursor.fromWebSafeString(cursorString);
-        query.setHint(JPACursorHelper.CURSOR_HINT, cursor);
-      }
+  mgr = new MessageDBService();
+  
+  result = mgr.load(offset,limit);
+      
 
-      if (limit != null) {
-        query.setFirstResult(0);
-        query.setMaxResults(limit);
-      }
-
-      execute = (List<MessageData>) query.getResultList();
-      cursor = JPACursorHelper.getCursor(execute);
-      if (cursor != null)
-        cursorString = cursor.toWebSafeString();
-
-      // Tight loop for fetching all entities from datastore and accomodate
-      // for lazy fetch.
-      for (MessageData obj : execute) {
-        ;
-      }
-    } finally {
-      mgr.close();
-    }
-
-    return CollectionResponse.<MessageData> builder().setItems(execute)
-        .setNextPageToken(cursorString).build();
+    return CollectionResponse.<MessageData> builder().setItems(result)
+        .setNextPageToken(""+offset+limit).build();
   }
   
   /**
@@ -132,15 +105,10 @@ public class MessageEndpoint {
     MessageData messageObj = new MessageData();
     messageObj.setMessage(message);
     messageObj.setTimestamp(System.currentTimeMillis());
-    EntityManager mgr = getEntityManager();
-    try {
-      mgr.persist(messageObj);
-    } finally {
-      mgr.close();
-    }
+    MessageDBService mgr = new MessageDBService();
+    message = mgr.save(message);
     // ping a max of 10 registered devices
-    CollectionResponse<DeviceInfo> response = endpoint.listDeviceInfo(null,
-        10);
+    CollectionResponse<DeviceInfo> response = endpoint.listDeviceInfo(0,10);
     for (DeviceInfo deviceInfo : response.getItems()) {
       doSendViaGcm(message, sender, deviceInfo);
     }
@@ -184,9 +152,5 @@ public class MessageEndpoint {
     }
 
     return result;
-  }
-  
-  private static EntityManager getEntityManager() {
-    return EMF.get().createEntityManager();
   }
 }
